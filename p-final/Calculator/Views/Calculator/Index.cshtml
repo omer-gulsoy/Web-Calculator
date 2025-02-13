@@ -1,0 +1,364 @@
+﻿@model Calculator.Models.CalculatorResult
+@{
+	ViewData["Title"] = "Calculator by Ömer";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var result = Model?.Result;
+}
+<section class="slider_section ">
+	<div id="customCarousel1" class="carousel slide" data-ride="carousel">
+		<div id="menuButton" onclick="toggleMenu()">
+			☰
+		</div>
+		<div id="sideMenu" class="side-menu">
+			<br />
+			<a href="#"><b>Upload File</b></a>
+			<form style="width:330px;" id="uploadForm" enctype="multipart/form-data">
+				<label for="fileInput" class="btn1 m-2" style="background-color: #5a2a8f; color: white;cursor: pointer; display: flex; align-items: center; justify-content: center;">Browse</label>
+				<input type="file" name="file" id="fileInput" accept=".txt" style="display: none;" />
+				<button type="submit" class="btn1 m-2" style="flex: 1; background-color: #5a2a8f; color: white;">Upload and Calculate</button>
+			</form>
+			<div style="color:#fff;width:330px" id="result"></div>
+			<button class="btn1 m-2" style="background-color: #5a2a8f; color: white;flex: 1;display:none;width:330px;" id="downloadBtn">Download Results</button>
+
+			<a href="#home"><b>Calculate History</b></a>
+			<table style="width:330px" id="productTable">
+				<thead>
+					<tr style="font-size:10px">
+						<th>Number 1</th>
+						<th>Operator</th>
+						<th>Number 2</th>
+						<th>=</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<div class="container ">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="img-box">
+								<img src="~/template/images/slider-img.png" alt="">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="detail-box">
+								<h1 class="mb-5">
+									Let's Calculate !!!
+								</h1>
+								<div class="mt-5">
+
+									<form id="calculatorForm" asp-action="Index" method="post">
+										<div class="form-row d-flex justify-content-center">
+											<div class="form-group col-md-4">
+												<label for="inputCity">Number 1</label>
+												<input type="text" step="any" asp-for="Number_1" required class="form-control" id="myTextBox" onclick="this.value = '';">
+											</div>
+
+											<div class="form-group col-md-2">
+												<label for="inputState">Operation</label>
+												<select asp-for="Operation" required>
+													<option value="+">+</option>
+													<option value="-">-</option>
+													<option value="*">*</option>
+													<option value="/">/</option>
+												</select>
+											</div>
+
+											<div class="form-group col-md-4">
+												<label for="inputZip">Number 2</label>
+												<input type="text" step="any" asp-for="Number_2" required class="form-control" id="myTextBox2" onclick="this.value = '';">
+											</div>
+										</div>
+
+										@if (Model != null && Model.Result.HasValue)
+										{
+											<h3 class="mt-3 mb-3"><b>= @Model.Result</b></h3>
+										}
+										else if (!ViewData.ModelState.IsValid)
+										{
+											<p style="color: red;">Hata: @Html.ValidationSummary()</p>
+										}
+
+										<div class="btn-box" style="display: flex; flex-direction: column; gap: 10px;">
+											<!-- Calculate Butonu (Enine Uzun) -->
+											<button type="submit" name="button" value="Hesapla" class="btn1 m-2" style="width: 100%;">Calculate</button>
+
+											<!-- M+, MR, MD Butonları Aynı Satırda -->
+											<div style="display: flex; gap: 10px;">
+												<button type="button" id="memoryPlusButton" class="btn1 m-2" style="flex: 1;">M+</button>
+												<button type="button" id="memoryRecallButton" class="btn1 m-2" style="flex: 1;">MR</button>
+												<button type="button" id="memoryDeleteButton" class="btn1 m-2" style="flex: 1;">M-</button>
+											</div>
+
+											<!-- Hafıza Butonu (Enine Uzun) -->
+											<button type="button" id="memoryGetButton" class="btn1 m-2" style="width: 100%;">
+												Memory: <span id="yrkValue">Loading...</span>
+											</button>
+										</div>
+
+
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.12.0/Toastify.min.js"></script>
+<script>
+	$(document).ready(function () {
+		// Seçili inputu takip eden değişken
+		let selectedInput = null;
+
+		// Text boxlara tıklandığında `selectedInput` güncelleniyor
+		$("#myTextBox").focus(function () {
+			selectedInput = "#myTextBox";
+		});
+
+		$("#myTextBox2").focus(function () {
+			selectedInput = "#myTextBox2";
+		});
+
+		// M+ butonuna tıklandığında `result` değerini hafızaya kaydediyoruz
+		$("#memoryPlusButton").click(function () {
+			// Razor değişkeni olan `result` JavaScript’e aktarılıyor
+			var result = @result ?? "null";
+
+			if (result !== "null") {
+				$.ajax({
+					type: "POST",
+					url: "/Calculator/AddToMemory",
+					data: { result: result },
+					success: function (response) {
+						Toastify({
+							text: response.message,
+							duration: 3000,
+							backgroundColor: response.success ? "green" : "red",
+							close: true
+						}).showToast();
+					},
+					error: function () {
+						Toastify({
+							text: "Error.",
+							duration: 3000,
+							backgroundColor: "red",
+							close: true
+						}).showToast();
+					}
+				});
+			} else {
+				Toastify({
+					text: "There is no calculated result.",
+					duration: 3000,
+					backgroundColor: "red",
+					close: true
+				}).showToast();
+			}
+		});
+
+		// MR butonuna tıklandığında `yrk` değerini seçili inputa yazıyoruz
+		$("#memoryRecallButton").click(function () {
+			$.ajax({
+				type: "POST",
+				url: "/Calculator/GetYrkValue", // Server'dan `yrk` değerini alıyoruz
+				success: function (response) {
+					var yrkValue = response.yrk;
+					if (yrkValue === 0) {
+						Toastify({
+							text: "Empty",
+							duration: 3000,
+							backgroundColor: "red",
+							close: true
+						}).showToast();
+					} else {
+						if (selectedInput) {
+							$(selectedInput).val(yrkValue);
+						} else {
+							Toastify({
+								text: "Please select a text box.",
+								duration: 3000,
+								backgroundColor: "red",
+								close: true
+							}).showToast();
+						}
+					}
+				},
+				error: function () {
+					Toastify({
+						text: "Error.",
+						duration: 3000,
+						backgroundColor: "red",
+						close: true
+					}).showToast();
+				}
+			});
+		});
+
+		// MD butonuna tıklanınca, `yrk` değerini sıfırlıyoruz
+		$("#memoryDeleteButton").click(function () {
+			$.ajax({
+				type: "POST",
+				url: "/Calculator/ClearMemory",
+				success: function (response) {
+					Toastify({
+						text: response.message,
+						duration: 3000,
+						backgroundColor: response.success ? "green" : "red",
+						close: true
+					}).showToast();
+				},
+				error: function () {
+					Toastify({
+						text: "Error.",
+						duration: 3000,
+						backgroundColor: "red",
+						close: true
+					}).showToast();
+				}
+			});
+		});
+
+		// Yrk değerini sunucudan almak için AJAX kullanacağız
+		function getYrkValue() {
+			$.ajax({
+				type: "POST",
+				url: "/Calculator/GetYrkValue",
+				success: function (response) {
+					var yrkValue = response.yrk;
+
+					if (yrkValue === 0) {
+						$("#yrkValue").text("Empty");
+						Toastify({
+							text: "Empty",
+							duration: 3000,
+							backgroundColor: "red",
+							close: true
+						}).showToast();
+					} else {
+						$("#yrkValue").text(yrkValue);
+					}
+				},
+				error: function () {
+					Toastify({
+						text: "Error.",
+						duration: 3000,
+						backgroundColor: "red",
+						close: true
+					}).showToast();
+				}
+			});
+		}
+
+		// Yrk değerini her 2 saniyede bir güncelle
+		setInterval(getYrkValue, 2000);
+	});
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+	   $.ajax({
+			  url: '/Calculator/GetResult',
+				 method: 'GET',
+				 success: function (data) {
+					 var tableBody = $('#productTable tbody');
+						tableBody.empty(); // Tabloyu temizle
+						data.forEach(function (result) {
+					var row = `<tr>
+								<td>${result.number_1}</td>
+								   <td>${result.operation}</td>
+						<td>${result.number_2}</td>
+						<td>${result.result}</td>
+				   </tr>`;
+					tableBody.append(row);
+				});
+
+						// Tablo genişliğini 330px olarak ayarlıyoruz
+					 $('#productTable').css('width', '300px');
+				 },
+					error: function () {
+					 alert('Veriler alınırken bir hata oluştu.');
+			  }
+	   });
+	});
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            let results = [];
+
+            $("#uploadForm").on("submit", function (e) {
+                e.preventDefault();
+
+                var formData = new FormData();
+                formData.append("file", $("#fileInput")[0].files[0]);
+
+                $.ajax({
+                    url: '/Calculator/ProcessFile',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            results = response.results; // Sonuçları sakla
+                            // Sonuçları ekranda göster
+							let resultHtml = `<p style="font-weight: bold;">Results:</p>`; // Başlık kısmı
+							resultHtml += results.map(r => `<p>${r}</p>`).join(''); // Sonuçları ekle
+							$("#result").html(resultHtml);
+							
+							// Soldan boşluk eklemek için style ekleme
+							$("#result").css("padding-left", "20px");
+							
+							
+							// Soldan boşluk eklemek için style ekleme
+							$("#result").css("padding-left", "20px");
+							
+
+                            // İndirme butonunu göster
+                            $("#downloadBtn").show();
+                        } else {
+                            $("#result").html("Hata: " + response.message);
+                            $("#downloadBtn").hide();
+                        }
+                    },
+                    error: function () {
+                        $("#result").html("Bir hata oluştu.");
+                        $("#downloadBtn").hide();
+                    }
+                });
+            });
+
+            // İndirme butonuna tıklandığında sonuçları indir
+            $("#downloadBtn").on("click", function () {
+                $.ajax({
+                    url: '/Calculator/DownloadResults',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(results),
+                    xhrFields: {
+                        responseType: 'blob'  // Doğrudan dosya olarak al
+                    },
+                    success: function (blob) {
+                        // Dosya indirme bağlantısı oluştur
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "CalculationResults.txt";
+                        link.click();
+                    },
+                    error: function () {
+                        alert("Bir hata oluştu.");
+                    }
+                });
+            });
+        });
+    </script>

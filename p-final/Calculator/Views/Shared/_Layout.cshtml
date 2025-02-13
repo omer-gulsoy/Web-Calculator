@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Basic -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>Calculator</title>
+	<!-- bootstrap core css -->
+	<link rel="stylesheet" type="text/css" href="~/template/css/bootstrap.css" />
+	<!-- font awesome style -->
+	<link href="~/template/css/font-awesome.min.css" rel="stylesheet" />
+	<!-- Custom styles for this template -->
+	<link href="~/template/css/style.css" rel="stylesheet" />
+	<!-- responsive style -->
+	<link href="~/template/css/responsive.css" rel="stylesheet" />
+	<!-- Toastify CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Toastify/1.12.0/Toastify.min.css" />
+	<style>
+		/* Buton stilini aynı yapmak için */
+		.btn1 {
+			background-color: #007bff; /* Buton rengini belirleyin */
+			color: white; /* Metin rengini beyaz yapalım */
+			border: none; /* Kenarlıkları kaldırıyoruz */
+			padding: 10px 20px; /* Butonun içindeki boşlukları ayarlıyoruz */
+			font-size: 16px; /* Yazı boyutunu ayarlıyoruz */
+			border-radius: 5px; /* Kenarları yuvarlatıyoruz */
+			cursor: pointer; /* İmleç üzerine geldiğinde tıklanabilir olduğunu belirtiyoruz */
+			width: 100%; /* Buton genişliğini kapsayıcıya göre ayarlıyoruz */
+		}
+
+			/* Buton üzerine gelindiğinde değişim */
+			.btn1:hover {
+				background-color: #0056b3; /* Hover durumunda buton rengini değiştiriyoruz */
+			}
+
+
+
+		/* Tablodaki hücrelerin beyaz yazı rengi ve kenarlık */
+		#productTable th, #productTable td {
+			color: white;
+			border: 1px solid white;
+			padding: 8px;
+			padding-right: 8px;
+			text-align: center;
+			width: 100px;
+		}
+
+			/* Sütun genişliklerini ayarla */
+			#productTable th:nth-child(1),
+			#productTable td:nth-child(1) {
+				width: 20%; /* 1. sütun genişliği */
+			}
+
+			#productTable th:nth-child(2),
+			#productTable td:nth-child(2) {
+				width: 15%; /* 2. sütun genişliği */
+			}
+
+			#productTable th:nth-child(3),
+			#productTable td:nth-child(3) {
+				width: 25%; /* 3. sütun genişliği */
+			}
+
+			#productTable th:nth-child(4),
+			#productTable td:nth-child(4) {
+				width: 40%; /* 4. sütun genişliği */
+			}
+
+		/* Tablo başlık hücreleri için arka plan */
+		#productTable th {
+			background-color: #333;
+		}
+
+		/* Alternatif satır arka plan rengi */
+		#productTable tr:nth-child(even) {
+			background-color: #444;
+		}
+
+
+		/* Tablo genel stil */
+		#productTable {
+			margin: 30px;
+			width: 100%;
+			border-collapse: collapse; /* Hücrelerin birleşik görünmesi için */
+		}
+
+			/* Başlık ve veri hücrelerine beyaz yazı ve kenarlık ekle */
+			#productTable th, #productTable td {
+				color: white;
+				border: 1px solid white; /* Beyaz kenarlık */
+				padding: 8px; /* Hücre içi boşluk */
+				text-align: center; /* Ortala */
+			}
+
+			/* Tablo başlık hücreleri için arka plan */
+			#productTable th {
+				background-color: #333; /* Koyu arka plan */
+			}
+
+			/* Veri satırlarının arka planı */
+			#productTable tr:nth-child(even) {
+				background-color: #444; /* Alternatif arka plan rengi */
+			}
+			/* Tablodaki tüm hücrelerin yazı rengini beyaz yap */
+			#productTable th, #productTable td {
+				color: white;
+			}
+		/* Hamburger Menü Butonu Stili */
+		#menuButton {
+			font-size: 30px;
+			cursor: pointer;
+			position: fixed;
+			top: 20px;
+			left: 20px;
+			color: #fff;
+			z-index: 1000;
+		}
+
+		/* Yan Menü Stili */
+		.side-menu {
+			height: 100%;
+			width: 0;
+			position: fixed;
+			z-index: 999;
+			top: 0;
+			left: 0;
+			background-color: #111;
+			overflow-x: hidden;
+			transition: 0.3s;
+			padding-top: 60px;
+		}
+
+			.side-menu a {
+				padding: 10px 15px;
+				text-decoration: none;
+				font-size: 22px;
+				color: #ddd;
+				display: block;
+				transition: 0.2s;
+			}
+
+				.side-menu a:hover {
+					color: #fff;
+				}
+
+			.side-menu .closebtn {
+				position: absolute;
+				top: 20px;
+				right: 25px;
+				font-size: 36px;
+				color: #ddd;
+				cursor: pointer;
+			}
+
+	</style>
+</head>
+
+<body>
+	<!-- navbar -->
+	<div class="hero_area">
+		<!-- header section strats -->
+		<header class="header_section">
+			<div class="container-fluid">
+				<nav class="navbar navbar-expand-lg custom_nav-container ">
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class=""> </span>
+					</button>
+
+
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav  ">
+							<li class="nav-item active">
+								<a class="navbar-brand" href="index.html">
+									<span>
+										Calculator
+									</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+
+				</nav>
+			</div>
+		</header>
+		<!-- end header section -->
+		@RenderBody()
+	</div>
+	<!-- navbar -->
+
+	<footer>
+		<div class="footer_container">
+			<!-- info section -->
+			<section class="info_section ">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6 col-lg-3 ">
+							<div class="info_detail">
+								<h4>
+									Calculator
+								</h4>
+								<p>
+									Necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful
+								</p>
+							</div>
+						</div>
+						<div class="col-md-6 col-lg-2 mx-auto">
+							<div class="info_link_box">
+								<h4>
+									Links
+								</h4>
+								<div class="info_links">
+									<a class="" href="~/template/index.html">
+										Home
+									</a>
+									<a class="" href="~/template/about.html">
+										About
+									</a>
+									<a class="" href="~/template/service.html">
+										Services
+									</a>
+									<a class="" href="~/template/contact.html">
+										Contact Us
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-lg-3 ">
+							<h4>
+								Subscribe
+							</h4>
+							<form action="#">
+								<input type="text" placeholder="Enter email" />
+								<button type="submit">
+									Subscribe
+								</button>
+							</form>
+						</div>
+						<div class="col-md-6 col-lg-3 mb-0 ml-auto">
+							<div class="info_contact">
+								<h4>
+									Address
+								</h4>
+								<div class="contact_link_box">
+									<a href="~/template/">
+										<i class="fa fa-map-marker" aria-hidden="true"></i>
+										<span>
+											Location
+										</span>
+									</a>
+									<a href="~/template/">
+										<i class="fa fa-phone" aria-hidden="true"></i>
+										<span>
+											Call +01 1234567890
+										</span>
+									</a>
+									<a href="~/template/">
+										<i class="fa fa-envelope" aria-hidden="true"></i>
+										<span>
+											demo@gmail.com
+										</span>
+									</a>
+								</div>
+							</div>
+							<div class="info_social">
+								<a href="~/template/">
+									<i class="fa fa-facebook" aria-hidden="true"></i>
+								</a>
+								<a href="~/template/">
+									<i class="fa fa-twitter" aria-hidden="true"></i>
+								</a>
+								<a href="~/template/">
+									<i class="fa fa-linkedin" aria-hidden="true"></i>
+								</a>
+								<a href="~/template/">
+									<i class="fa fa-instagram" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- end info section -->
+			<!-- footer section -->
+			<footer class="footer_section">
+				<div class="container">
+					<p>
+						&copy; <span id="displayYear"></span> All Rights Reserved By
+						<a href="https://tr.linkedin.com/in/omer-h-gulsoy">Ömer Hasan GÜLSOY</a>
+					</p>
+				</div>
+			</footer>
+			<!-- footer section -->
+		</div>
+	</footer>
+</body>
+
+</html>
+
+
+<script>
+	function toggleMenu() {
+		const sideMenu = document.getElementById("sideMenu");
+		if (sideMenu.style.width === "350px") {
+			sideMenu.style.width = "0";
+		} else {
+			sideMenu.style.width = "350px";
+		}
+	}
+
+</script>
